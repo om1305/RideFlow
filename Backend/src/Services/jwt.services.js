@@ -15,3 +15,14 @@ export const generateRefreshToken = (user) => {
         { expiresIn: "7d" }
     );
 };
+
+export const generateCaptainAcessToken = (captain) => {
+    return jwt.sign({
+        id:captain.id,
+        type:"CAPTIAN",
+    },
+    process.env.JWT_SECRET , 
+   {
+    expiresIn:"15m",
+   })
+}
