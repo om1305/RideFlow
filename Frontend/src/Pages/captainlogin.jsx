@@ -8,7 +8,7 @@ export default function Captainlogin() {
 
   const [email , setemail] = useState('');
   const [Password , setPassword] = useState('');
-  const {captainData , setcaptainData} = React.useContext(CaptainDataContext);
+  const { captain, setCaptain } = React.useContext(CaptainDataContext);
   const submitHandler = async(e)=>{
     e.preventDefault();
 
@@ -20,7 +20,7 @@ export default function Captainlogin() {
 
     if(response.status === 200 ){
       const data = response.data;
-      setcaptainData(data.captainData);
+      setCaptain(data.captain);
       localStorage.setItem('accessToken',data.accessToken)
       navigate('/captain-home');
     }

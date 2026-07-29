@@ -41,7 +41,7 @@ export default function CaptainSignup() {
     if(response.status === 201 ){
       const data = response.data;
       setCaptainRegisterData(data);
-      localStorage.setItem("accesstoken",data.accessToken);
+      localStorage.setItem("accessToken",data.accessToken);
       navigate('/captain-home');
     }
 

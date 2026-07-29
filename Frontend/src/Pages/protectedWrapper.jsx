@@ -19,9 +19,9 @@
 // export default UserprotectedWrapper
 
 import { useContext, useEffect, useState } from "react";
-import { UserDataContext } from "../Context/user.context";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { UserDataContext } from "../Context/user.context";
 
 const UserProtectedWrapper = ({ children }) => {
   const token = localStorage.getItem("accessToken");
@@ -40,7 +40,7 @@ const UserProtectedWrapper = ({ children }) => {
 
       try {
         const response = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/v1/users/profile`,
+          `${import.meta.env.VITE_BASE_URL}/v1/users/getprofile`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
