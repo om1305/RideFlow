@@ -22,11 +22,11 @@ export default function Userlogin() {
     setPassword('');
     const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/v1/users/login`,userData);
 
-    if(response.status === 201){
+    if(response.status === 200){
       const data = response.data;
       setuserData(data.user);
-
-      navigate('/page')
+      localStorage.setItem('token',data.accessToken)
+      navigate('/user-home')
     }
   }
 

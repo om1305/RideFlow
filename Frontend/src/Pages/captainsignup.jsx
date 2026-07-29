@@ -1,7 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import { useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
+import { CaptainDataContext } from "../Context/captain.context";
 
 
 const inputClass =
@@ -19,6 +20,7 @@ export default function CaptainSignup() {
     const [vehiclePlate , setvehiclePlate] = useState('');
     const [vehicleType , setvehicleType] = useState('');
 
+    const {captain , setcaptain} = React.useContext(CaptainDataContext);
     const [captainRegisterData , setCaptainRegisterData] = useState({})
     const submitHandler = async(e) => {
       e.preventDefault();
@@ -39,7 +41,8 @@ export default function CaptainSignup() {
     if(response.status === 201 ){
       const data = response.data;
       setCaptainRegisterData(data);
-      navigate('/page');
+      localStorage.setItem("accesstoken",data.accessToken);
+      navigate('/captain-home');
     }
 
     setPassword('');

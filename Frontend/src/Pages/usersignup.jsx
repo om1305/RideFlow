@@ -25,8 +25,9 @@ export default function UserSignup() {
 
     if(response.status === 201 ){
       const data = response.data;
-      setuserRegisterData(data);
-      navigate('/page');
+      setuserRegisterData(data.user);
+      localStorage.setItem('token',data.accessToken)
+      navigate('/user-home');
     }
     setPassword('');
     setemail('');
