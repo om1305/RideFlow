@@ -1,173 +1,96 @@
-import { LogOut, Car, MapPin, Star, IndianRupee } from "lucide-react";
+import React, { useRef, useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
+import { LogOut } from "lucide-react";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import CaptainDetails from "../Components/captaindetail";
+import RidePopUp from "../Components/ridepopup";
+import ConfirmRidePopUp from "../Components/confirmridepopup";
 
-export default function CaptainHome() {
+const CaptainHome = () => {
+  const [ridepopuppanel , setridepopuppanel] = useState(true);
+  const [confirmridepopup , setconfirmridepopup] = useState(false);
+
+  const ridepopuppanelRef = useRef(null);
+  const confirmridepopupRef = useRef(null)
+
+  useGSAP(()=>{
+    gsap.to(confirmridepopupRef.current , {
+      y: confirmridepopup ? '0%' : '100%' ,
+      duration : 0.4,
+      ease : "power3.out"
+    });
+  },[confirmridepopup]);
+
+  useGSAP(()=>{
+    gsap.to(ridepopuppanelRef.current , {
+      y: ridepopuppanel ? '5%' : '100%' ,
+      duration : 0.4,
+      ease : "power3.out"
+    });
+  },[ridepopuppanel]);
+  
   return (
-    <div className="min-h-screen bg-[#050816] text-white">
+    <div className="relative h-screen overflow-hidden bg-[#050816]">
 
-      {/* Navbar */}
-      <nav className="flex items-center justify-between px-8 py-6 lg:px-16">
-        <h1 className="text-3xl font-bold tracking-wider">
-          Ride<span className="text-cyan-400">Flow</span>
-        </h1>
+      {/* Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-transparent to-violet-500/10" />
+
+      {/* Map */}
+      <div className="absolute inset-0">
+        <img
+          className="h-full w-full object-cover opacity-80"
+          src="https://miro.medium.com/v2/resize:fit:1400/0*gwMx05pqII5hbfmX.gif"
+          alt=""
+        />
+      </div>
+
+      {/* Top Bar */}
+      <div className="absolute top-0 left-0 z-20 flex w-full items-center justify-between p-6">
+
+        <div>
+          <h1 className="text-3xl font-bold text-white">
+            Ride<span className="text-cyan-400">Flow</span>
+          </h1>
+
+          <p className="mt-1 text-sm text-gray-300">
+            Driver Dashboard
+          </p>
+        </div>
 
         <Link
-          to="/captain-login"
-          className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/5 transition hover:bg-white/10"
+          to="/captain-home"
+          className="flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-lg transition hover:scale-105"
         >
           <LogOut size={20} />
         </Link>
-      </nav>
+      </div>
 
-      {/* Map */}
-      <div className="mx-auto mt-2 h-[42vh] w-[92%] overflow-hidden rounded-3xl border border-white/10 bg-white/5">
+      {/* Bottom Details */}
+      <div 
+      className="absolute bottom-0 left-0 z-20 w-full h-[70%] rounded-t-[35px] bg-white p-6 shadow-2xl">
 
-        <img
-          src="https://miro.medium.com/v2/resize:fit:1400/0*gwMx05pqII5hbfmX.gif"
-          alt="Map"
-          className="h-full w-full object-cover"
-        />
+        <CaptainDetails/>
 
       </div>
 
-      {/* Captain Details */}
-      <div className="mx-auto mt-6 w-[92%] rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-xl">
-
-        <div className="flex items-center justify-between">
-
-          <div className="flex items-center gap-4">
-
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-violet-500 text-2xl font-bold">
-              A
-            </div>
-
-            <div>
-              <h2 className="text-xl font-bold">
-                Alex Johnson
-              </h2>
-
-              <p className="text-gray-400">
-                Toyota Innova • DL01AB1234
-              </p>
-            </div>
-
-          </div>
-
-          <div className="flex items-center gap-1 text-yellow-400">
-            <Star size={18} fill="currentColor" />
-            <span className="font-semibold">4.9</span>
-          </div>
-
-        </div>
-
-        {/* Stats */}
-
-        <div className="mt-8 grid grid-cols-3 gap-4">
-
-          <div className="rounded-2xl bg-white/5 p-5 text-center">
-            <Car className="mx-auto mb-3 text-cyan-400" />
-            <h3 className="text-xl font-bold">
-              124
-            </h3>
-            <p className="text-sm text-gray-400">
-              Trips
-            </p>
-          </div>
-
-          <div className="rounded-2xl bg-white/5 p-5 text-center">
-            <IndianRupee className="mx-auto mb-3 text-green-400" />
-            <h3 className="text-xl font-bold">
-              ₹18,450
-            </h3>
-            <p className="text-sm text-gray-400">
-              Earnings
-            </p>
-          </div>
-
-          <div className="rounded-2xl bg-white/5 p-5 text-center">
-            <MapPin className="mx-auto mb-3 text-violet-400" />
-            <h3 className="text-xl font-bold">
-              Online
-            </h3>
-            <p className="text-sm text-gray-400">
-              Status
-            </p>
-          </div>
-
-        </div>
-
+      {/* Ride Popup */}
+      <div
+      ref={ridepopuppanelRef}
+        className="fixed bottom-0 left-0 z-40 w-full translate-y-full rounded-t-[35px] bg-white"
+      >
+        <RidePopUp setridepopuppanel = {setridepopuppanel} setconfirmridepopup = {setconfirmridepopup} />
       </div>
 
-      {/* Ride Request Card */}
-
-      <div className="mx-auto mt-6 mb-8 w-[92%] rounded-3xl border border-violet-500/30 bg-violet-500/10 p-6">
-
-        <h2 className="mb-5 text-2xl font-bold">
-          New Ride Request
-        </h2>
-
-        <div className="space-y-5">
-
-          <div>
-            <p className="text-gray-400">
-              Pickup
-            </p>
-
-            <h3 className="font-semibold">
-              Connaught Place, New Delhi
-            </h3>
-          </div>
-
-          <div>
-            <p className="text-gray-400">
-              Destination
-            </p>
-
-            <h3 className="font-semibold">
-              India Gate
-            </h3>
-          </div>
-
-          <div className="flex justify-between">
-
-            <div>
-              <p className="text-gray-400">
-                Distance
-              </p>
-
-              <h3 className="font-semibold">
-                8.5 km
-              </h3>
-            </div>
-
-            <div>
-              <p className="text-gray-400">
-                Fare
-              </p>
-
-              <h3 className="font-semibold text-green-400">
-                ₹285
-              </h3>
-            </div>
-
-          </div>
-
-        </div>
-
-        <div className="mt-8 flex gap-4">
-
-          <button className="flex-1 rounded-xl bg-violet-500 py-4 font-semibold transition hover:bg-violet-600">
-            Accept Ride
-          </button>
-
-          <button className="flex-1 rounded-xl border border-white/10 py-4 transition hover:bg-white/10">
-            Decline
-          </button>
-
-        </div>
-
+      {/* Confirm Popup */}
+      <div
+      ref={confirmridepopupRef}
+        className="fixed bottom-0 left-0 z-50 w-full translate-y-full rounded-t-[35px] bg-white"
+      >
+        <ConfirmRidePopUp setconfirmridepopup = {setconfirmridepopup} setridepopuppanel = {setridepopuppanel}  />
       </div>
-
     </div>
   );
-}
+};
+
+export default CaptainHome;

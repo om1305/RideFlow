@@ -58,44 +58,6 @@ export default function LookingForDriver() {
 
         </div>
 
-        {/* Pickup */}
-        {/* <div className="mt-8 flex items-start gap-4 border-b pb-4">
-
-          <div className="rounded-full bg-gray-100 p-3">
-            <MapPin size={20} />
-          </div>
-
-          <div>
-            <h4 className="font-semibold">
-              Connaught Place
-            </h4>
-
-            <p className="text-sm text-gray-500">
-              New Delhi, Delhi
-            </p>
-          </div>
-
-        </div> */}
-
-        {/* Destination */}
-        {/* <div className="flex items-start gap-4 pt-4">
-
-          <div className="rounded-full bg-gray-100 p-3">
-            <Navigation size={20} />
-          </div>
-
-          <div>
-            <h4 className="font-semibold">
-              India Gate
-            </h4>
-
-            <p className="text-sm text-gray-500">
-              Rajpath, New Delhi
-            </p>
-          </div>
-
-        </div> */}
-
       </div>
 
     </div>
