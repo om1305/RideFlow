@@ -7,6 +7,7 @@ import route from "./src/Routes/user.route.js";
 import compression from "compression";
 import CaptainRoute from "./src/Routes/captain.route.js";
 import mapRoute from "./src/Routes/map.route.js";
+import RideRoute from "./src/Routes/ride.routes.js";
 
 dotenv.config()
 const app = express();
@@ -23,6 +24,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/v1/users",route)
 app.use("/api/v1/captain" , CaptainRoute)
 app.use("/api/v1/map",mapRoute)
+app.use("/api/v1/ride" , RideRoute);
 
 app.listen(process.env.PORT ,()=>{
     console.log(`server started on ${process.env.PORT}`)

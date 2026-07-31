@@ -40,8 +40,8 @@ export const getDistanceTime = async (origin , destination) => {
         const properties = data.features[0].properties;
         return {
             distances : {
-                value:properties.time,
-                text: `${Math.ceil(properties.time / 60)}mins`
+                time:properties.time,
+                distance:properties.distance 
             }
         };
     }catch(err){
@@ -59,7 +59,6 @@ export const getAutoSuggesstion = async(input) => {
     const url = `https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(input)}&limit=5&apiKey=${apikey}`;
     try { 
         const {data} = await axios.get(url);
-        console.log(data.features.map(feature => feature.properties.formatted))
         return data.features.map(feature => feature.properties.formatted)
     }catch(err){
         throw err;

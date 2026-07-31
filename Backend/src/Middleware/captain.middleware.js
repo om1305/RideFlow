@@ -5,6 +5,7 @@ export const Captainauth = async (req , res, next)=>{
     try{
          const authHeader = req.headers.authorization;
         const token = authHeader?.startsWith("Bearer ") ? authHeader.split(" ")[1] : null;
+        
 
         if(!token){
             return res.status(401).json({
@@ -24,9 +25,9 @@ export const Captainauth = async (req , res, next)=>{
                 message: "Unauthorized"
             });
         }
-    
+
         const {password , ...safeEntity} = entity;
-         req.captain= safeEntity;
+        req.captain= safeEntity;
     
         return next();
     }catch(error){

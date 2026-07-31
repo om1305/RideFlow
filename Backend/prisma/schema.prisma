@@ -6,6 +6,7 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
 enum Role {
   USER
   DRIVER
@@ -13,45 +14,78 @@ enum Role {
 }
 
 model User {
-  id         String   @id @default(cuid())
-  firstName  String
-  lastName   String?
-  email      String   @unique
-  password   String
-  role       Role     @default(USER)
-  socketId   String?
+  id        String  @id @default(cuid())
+  firstName String
+  lastName  String?
+  email     String  @unique
+  password  String
+  role      Role    @default(USER)
+  socketId  String?
 
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  rides Ride[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
-enum CaptainStatus{
+enum CaptainStatus {
   OFFLINE
   ONLINE
   ON_RIDE
 }
 
-enum VehicleType{
+enum VehicleType {
   CAR
   MOTORCYCLE
   AUTO
 }
 
 model Captain {
-  id String @id @default(uuid())
-  firstName String
-  lastName String?
-  email String @unique
-  password String
-  socketId String?
-  status CaptainStatus @default(OFFLINE)
-  vehicleColour String
-  vehiclePlate String @unique
+  id              String        @id @default(uuid())
+  firstName       String
+  lastName        String?
+  email           String        @unique
+  password        String
+  socketId        String?
+  status          CaptainStatus @default(OFFLINE)
+  vehicleColour   String
+  vehiclePlate    String        @unique
   vehicleCapacity Int
-  vehicleType VehicleType
-  locationLat Float?
-  locationLon Float?
-  rating Float @default(5)
+  vehicleType     VehicleType
+  locationLat     Float?
+  locationLon     Float?
+  rating          Float         @default(5)
+
+  rides Ride[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum StatusRide {
+  PENDING
+  ACCEPTED
+  ONGOING
+  COMPLETED
+  CANCELLED
+}
+
+model Ride {
+  id          String     @id @default(uuid())
+  userId      String
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  captainId   String?
+  captain     Captain?   @relation(fields: [captainId], references: [id])
+  pickup      String
+  destination String
+  fare        Float
+  status      StatusRide @default(PENDING)
+  duration    Int?
+  distance    Int?
+  paymentId   String?
+  orderId     String?
+  signature   String?
+  otp         String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

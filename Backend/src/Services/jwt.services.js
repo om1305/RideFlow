@@ -19,7 +19,7 @@ export const generateRefreshToken = (user) => {
 export const generateCaptainAcessToken = (captain) => {
     return jwt.sign({
         id:captain.id,
-        type:"CAPTIAN",
+        type:"CAPTAIN",
     },
     process.env.JWT_SECRET , 
    {
