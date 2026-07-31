@@ -1,4 +1,6 @@
 import React from "react";
+import axios from "axios";
+
 import {
   ChevronDown,
   MapPin,
@@ -8,12 +10,44 @@ import {
 } from "lucide-react";
 
 const ConfirmRide = ({
+  VehicleType,
+  fares,
   setComfirmPanel,
   setVehiclePanel,
   pickup,
   destination,
   setlookingdriverpanel
 }) => {
+
+  const handleCreateRide = async () => {
+  try {
+    const token = localStorage.getItem("accessToken");
+
+    const response = await axios.post(
+      `${import.meta.env.VITE_BASE_URL}/v1/ride/create`,
+      {
+        pickup,
+        destination,
+        vehicleType: VehicleType
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+
+    // console.log(response.data);
+    setlookingdriverpanel(true);
+    setComfirmPanel(false);
+
+
+  } catch (error) {
+    console.error(error.response?.data || error);
+    alert("Unable to create ride.");
+  }
+};
+
   return (
     <div className="h-[65vh] rounded-t-3xl bg-white">
 
@@ -61,7 +95,7 @@ const ConfirmRide = ({
           </div>
 
           <h3 className="text-2xl font-bold">
-            ₹55
+            {fares[VehicleType]}
           </h3>
 
         </div>
@@ -106,10 +140,7 @@ const ConfirmRide = ({
 
         {/* Confirm Button */}
         <button
-          onClick={() => {
-            setlookingdriverpanel(true);
-            setComfirmPanel(false);
-          }}
+          onClick={handleCreateRide}
           className="mt-8 w-full rounded-xl bg-black py-4 text-lg font-semibold text-white transition hover:bg-gray-900"
         >
           Confirm Ride

@@ -110,8 +110,6 @@ export const confirmRideController = async (req, res) => {
     }
     const { rideId } = parsed.data;
 
-
-
     try {
         
         const ride = await confirmRide(rideId, req.captain);

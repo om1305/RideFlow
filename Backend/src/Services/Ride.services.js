@@ -22,9 +22,9 @@ export const getFare = async(pickup , destination) =>{
 
     const distanceTime = await getDistanceTime(pickup , destination);
     const fare = {
-        CAR : baseFare.CAR + (distanceTime.distances.distance/1000)*perKmRate.CAR + (distanceTime.distances.time/60)*perMinRate.CAR,
-        AUTO :  baseFare.AUTO + (distanceTime.distances.distance/1000)*perKmRate.AUTO + (distanceTime.distances.time/60)*perMinRate.AUTO,
-        MOTO  : baseFare.MOTO + (distanceTime.distances.distance/1000)*perKmRate.MOTO + (distanceTime.distances.time/60)*perMinRate.MOTO
+        CAR : Math.round(baseFare.CAR + (distanceTime.distances.distance/1000)*perKmRate.CAR + (distanceTime.distances.time/60)*perMinRate.CAR),
+        AUTO :  Math.round(baseFare.AUTO + (distanceTime.distances.distance/1000)*perKmRate.AUTO + (distanceTime.distances.time/60)*perMinRate.AUTO),
+        MOTO  : Math.round(baseFare.MOTO + (distanceTime.distances.distance/1000)*perKmRate.MOTO + (distanceTime.distances.time/60)*perMinRate.MOTO)
     }
 
     return fare;

@@ -8,7 +8,7 @@ const RideRoute = Router();
 
 RideRoute.post('/create' , authUser , createRideController );
 
-RideRoute.post('/get-fare',authUser , getFareController);
+RideRoute.get('/get-fare',authUser , getFareController);
 
 RideRoute.post('/confirm',Captainauth , confirmRideController);
 

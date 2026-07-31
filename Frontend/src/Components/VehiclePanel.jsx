@@ -1,7 +1,7 @@
 import React from "react";
 import { ArrowLeft, Car, Bike, Bus , ChevronDown } from "lucide-react";
 
-export default function VehiclePanel({ setVehiclePanel, setPanelOpen ,setComfirmPanel }) {
+export default function VehiclePanel({ setVehicleType , fares ,setVehiclePanel, setPanelOpen ,setComfirmPanel }) {
   return (
     <div className="h-[65vh] w-full rounded-t-3xl bg-white">
 
@@ -30,6 +30,7 @@ export default function VehiclePanel({ setVehiclePanel, setPanelOpen ,setComfirm
         {/* Car */}
         <div 
         onClick={()=>{
+        setVehicleType('CAR');
         setVehiclePanel(false);
         setComfirmPanel(true);
       }}
@@ -58,7 +59,7 @@ export default function VehiclePanel({ setVehiclePanel, setPanelOpen ,setComfirm
           </div>
 
           <h3 className="text-lg font-bold">
-            ₹185
+            {fares.CAR}
           </h3>
 
         </div>
@@ -66,6 +67,7 @@ export default function VehiclePanel({ setVehiclePanel, setPanelOpen ,setComfirm
         {/* Auto */}
         <div 
         onClick={()=>{
+        setVehicleType('AUTO');
         setVehiclePanel(false);
         setComfirmPanel(true);
       }}
@@ -94,7 +96,7 @@ export default function VehiclePanel({ setVehiclePanel, setPanelOpen ,setComfirm
           </div>
 
           <h3 className="text-lg font-bold">
-            ₹110
+            {fares.AUTO}
           </h3>
 
         </div>
@@ -102,6 +104,7 @@ export default function VehiclePanel({ setVehiclePanel, setPanelOpen ,setComfirm
         {/* Bike */}
         <div 
         onClick={()=>{
+          setVehicleType('MOTO');
         setVehiclePanel(false);
         setComfirmPanel(true);
       }}
@@ -130,7 +133,7 @@ export default function VehiclePanel({ setVehiclePanel, setPanelOpen ,setComfirm
           </div>
 
           <h3 className="text-lg font-bold">
-            ₹75
+            {fares.MOTO}
           </h3>
 
         </div>

@@ -8,6 +8,7 @@ import VehiclePanel from "../Components/VehiclePanel";
 import ConfirmRide from "../Components/confirmride";
 import LookingForDriver from "../Components/lookingfordriver";
 import WaitingForDriver from "../Components/waitingfordriver";
+import axios from "axios";
 
 export default function Userhome() {
   const [panelOpen, setPanelOpen] = useState(false);
@@ -18,14 +19,37 @@ export default function Userhome() {
   const [lookingdriverpanel , setlookingdriverpanel] = useState(false);
   const [waitingfordriverpanel , setwaitingfordriverpanel] = useState(false);
 
+  const [fares , setfares] = useState('');
+  const [vehicleType , setVehicleType] = useState('');
+
   const vehiclePanelRef = useRef(null);
   const panelRef = useRef(null);
   const confirmPanelRef = useRef(null);
   const lookingDriverPanelRef = useRef(null);
   const WaitingForDriverRef = useRef(null);
 
-  const submitHandler = (e) => {
+  const submitHandler = async(e) => {
     e.preventDefault();
+    await findRideHandler();
+  }
+
+  const findRideHandler = async () => {
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/v1/ride/get-fare`,
+      {
+        params: {
+          pickup,
+          destination,
+        },
+        headers : {Authorization: `Bearer ${localStorage.getItem("accessToken")}`}
+      })
+
+      setfares(response.data);
+      setPanelOpen(false);
+      setVehiclePanel(true);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   useGSAP(()=>{
@@ -148,10 +172,7 @@ export default function Userhome() {
           </div>
 
           <button className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-black py-4 text-lg font-semibold text-white"
-            onClick={() => {
-           setPanelOpen(false);
-           setVehiclePanel(true);
-            }}
+            
           >
             <Search size={20} />
             Find Ride
@@ -166,12 +187,14 @@ export default function Userhome() {
         ref={vehiclePanelRef}
         className="fixed bottom-0 left-0 w-full translate-y-full rounded-t-3xl bg-white z-30"
         >
-        <VehiclePanel setVehiclePanel={setVehiclePanel} setPanelOpen={setPanelOpen} setComfirmPanel = {setComfirmPanel}/>
+        <VehiclePanel setVehicleType = {setVehicleType}  fares = {fares} setVehiclePanel={setVehiclePanel} setPanelOpen={setPanelOpen} setComfirmPanel = {setComfirmPanel}/>
       </div>
       <div
       ref={confirmPanelRef}
       className="fixed bottom-0 left-0 w-full translate-y-full rounded-t-3xl bg-white z-30">
         <ConfirmRide 
+        VehicleType = {vehicleType}
+        fares = {fares}
         setComfirmPanel={setComfirmPanel} 
         setVehiclePanel = {setVehiclePanel} 
         pickup = {pickup} 
