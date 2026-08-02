@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Home,
@@ -8,8 +8,52 @@ import {
   Phone,
   MessageCircle,
 } from "lucide-react";
+import { SocketContext } from "../Context/socket.context";
+
 
 const Riding = () => {
+  const [ride , setRide] = useState(null);
+  const navigate = useNavigate();
+
+  const {socket} = useContext(SocketContext);
+
+//   useEffect(() => {
+//     socket.on("ride-confirmed",(rideData)=>{
+//         console.log("Ride Confirmed");
+//         setRide(rideData);
+//     });
+//     return ()=>socket.off("ride-confirmed");
+// },[]);
+
+//   useEffect(() => {
+
+//     socket.on("ride-started",(rideData)=>{
+
+//         console.log("Ride Started");
+//         setRide(rideData);
+
+//     });
+
+//     return ()=>socket.off("ride-started");
+
+// },[]);
+
+//   useEffect(()=>{
+
+//     socket.on("ride-ended",(rideData)=>{
+
+//         console.log("Ride Ended");
+
+//         navigate("/user-home");
+
+//     });
+
+//     return ()=>socket.off("ride-ended");
+
+// },[]);
+
+
+
 
   return (
     <div className="relative h-screen bg-gray-100">

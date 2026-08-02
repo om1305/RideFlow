@@ -1,10 +1,11 @@
-import { getAddressCoordinate } from "../Services/Map.services.js";
+import { getAddressCoordinate, getCaptainsInTheRadius } from "../Services/Map.services.js";
 import prisma from "../Config/prisma.js";
 import { createRide , confirmRide, endRide, getFare, startRide } from "../Services/Ride.services.js";
 import { confirmRideSchema, createRideSchema, endRideSchema, fareSchema, startRideSchema } from "../Validators/ride.validators.js";
+import { sendMessageToSocketId } from "../../socket.js";
+// import { sendMessageToSocketId } from "../../socket.js";
 
 export const createRideController = async (req, res) => {
-    // const { pickup, destination, vehicleType } = req.body;
 
     const parsed = createRideSchema.safeParse(req.body);
 
@@ -29,11 +30,7 @@ export const createRideController = async (req, res) => {
 
         const pickupCoordinates = await getAddressCoordinate(pickup);
 
-        // const captains = await getCaptainsInTheRadius(
-        //     pickupCoordinates.lat,
-        //     pickupCoordinates.lon,
-        //     2
-        // );
+        const captains = await getCaptainsInTheRadius();
 
         const rideWithUser = await prisma.ride.findUnique({
             where: {
@@ -47,18 +44,17 @@ export const createRideController = async (req, res) => {
         if (rideWithUser) {
             rideWithUser.otp = "";
         }
-        // captains.forEach((captain) => {
+        captains.forEach((captain) => {
 
-        //     if (captain.socketId) {
+    if (!captain.socketId) return;
 
-        //         sendMessageToSocketId(captain.socketId, {
-        //             event: "new-ride",
-        //             data: rideWithUser
-        //         });
+    sendMessageToSocketId(
+        captain.socketId,
+        "new-ride",
+        rideWithUser
+    );
 
-        //     }
-
-        // });
+});
 
     } catch (err) {
 
@@ -115,10 +111,16 @@ export const confirmRideController = async (req, res) => {
         const ride = await confirmRide(rideId, req.captain);
         // ride.otp = "";
 
-        // sendMessageToSocketId(ride.user.socketId, {
-        //     event: "ride-confirmed",
-        //     data: ride
-        // });
+        console.log("========== CONFIRM RIDE ==========");
+// console.log("User Socket:", ride.user.socketId);
+// console.log("Ride Status:", ride.status);
+// console.log("Ride User:", ride.user.id);
+
+        sendMessageToSocketId(
+    ride.user.socketId,
+    "ride-confirmed",
+    ride
+      );
 
         return res.status(200).json(ride);
 
@@ -155,10 +157,11 @@ export const startRideController = async (req, res) => {
 
         ride.otp = "";
 
-        // sendMessageToSocketId(ride.user.socketId, {
-        //     event: "ride-started",
-        //     data: ride
-        // });
+        sendMessageToSocketId(
+    ride.user.socketId,
+    "ride-started",
+    ride
+);
 
         return res.status(200).json(ride);
 
@@ -192,10 +195,11 @@ export const endRideController = async (req, res) => {
         });
 
         ride.otp = "";
-        // sendMessageToSocketId(ride.user.socketId, {
-        //     event: "ride-ended",
-        //     data: ride
-        // });
+        sendMessageToSocketId(
+    ride.user.socketId,
+    "ride-ended",
+    ride
+);
 
         return res.status(200).json(ride);
 

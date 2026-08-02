@@ -9,8 +9,8 @@ const route = Router();
 
 route.post("/register",authLimiter,register);
 
-route.post("/login" , authLimiter,login);
-// route.post("/login",login);
+// route.post("/login" , authLimiter ,login);
+route.post("/login",login);
 
 route.get("/getprofile",authUser ,getProfile);
 

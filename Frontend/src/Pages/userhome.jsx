@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { MapPin, Navigation, Search, ChevronDown } from "lucide-react";
 import {useGSAP} from '@gsap/react';
 import gsap from "gsap";
@@ -9,6 +9,7 @@ import ConfirmRide from "../Components/confirmride";
 import LookingForDriver from "../Components/lookingfordriver";
 import WaitingForDriver from "../Components/waitingfordriver";
 import axios from "axios";
+import { SocketContext } from "../Context/socket.context";
 
 export default function Userhome() {
   const [panelOpen, setPanelOpen] = useState(false);
@@ -18,9 +19,10 @@ export default function Userhome() {
   const [ confirmPanel , setComfirmPanel] = useState(false);
   const [lookingdriverpanel , setlookingdriverpanel] = useState(false);
   const [waitingfordriverpanel , setwaitingfordriverpanel] = useState(false);
-
+  const [user, setUser] = useState(null);
   const [fares , setfares] = useState('');
   const [vehicleType , setVehicleType] = useState('');
+  const [ride, setRide] = useState(null);
 
   const vehiclePanelRef = useRef(null);
   const panelRef = useRef(null);
@@ -28,10 +30,41 @@ export default function Userhome() {
   const lookingDriverPanelRef = useRef(null);
   const WaitingForDriverRef = useRef(null);
 
+  const {socket} = useContext(SocketContext);
+
+
   const submitHandler = async(e) => {
     e.preventDefault();
     await findRideHandler();
   }
+
+  const getUser = async () => {
+    const token = localStorage.getItem("accessToken");
+
+    const res = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/v1/users/getprofile`,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+    );
+
+    setUser(res.data.user);
+};
+useEffect(() => {
+    getUser();
+}, []);
+
+useEffect(() => {
+    if (!user) return;
+
+    socket.emit("join", {
+        userId: user.id,
+        userType: "user"
+    });
+}, [user]);
+
 
   const findRideHandler = async () => {
     try {
@@ -51,6 +84,67 @@ export default function Userhome() {
       console.error(error);
     }
   }
+
+  useEffect(() => {
+
+    if (!user) return;
+
+    socket.emit("join", {
+        userId: user.id,
+        userType: "user"
+    });
+}, [user]);
+
+  useEffect(() => {
+
+    socket.on("ride-confirmed", (rideData) => {
+
+      setRide(rideData);
+
+        console.log("Ride Accepted");
+
+        setlookingdriverpanel(false);
+
+        setwaitingfordriverpanel(true);
+
+    });
+
+    socket.on("ride-started", (ride) => {
+
+        console.log("Ride Started");
+
+    });
+
+    socket.on("ride-ended", (ride) => {
+
+        console.log("Ride Ended");
+
+    });
+
+    return () => {
+
+        socket.off("ride-confirmed");
+        socket.off("ride-started");
+        socket.off("ride-ended");
+
+    };
+
+}, []);
+
+//   useEffect(() => {
+
+//     socket.on("ride-confirmed", (ride) => {
+
+//         console.log("Ride Accepted");
+
+//         setlookingdriverpanel(false);
+
+//         setwaitingfordriverpanel(true);
+
+//     });
+
+
+// }, []);
 
   useGSAP(()=>{
     gsap.to(WaitingForDriverRef.current, {
@@ -210,7 +304,7 @@ export default function Userhome() {
       <div 
       ref = {WaitingForDriverRef}
       className="fixed bottom-0 left-0 w-full translate-y-full rounded-t-3xl bg-white z-30">
-        <WaitingForDriver waitingfordriverpanel = {waitingfordriverpanel}/>
+        <WaitingForDriver ride={ride} waitingfordriverpanel = {waitingfordriverpanel}/>
       </div>
     </div>
   );

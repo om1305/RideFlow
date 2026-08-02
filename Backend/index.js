@@ -8,6 +8,8 @@ import compression from "compression";
 import CaptainRoute from "./src/Routes/captain.route.js";
 import mapRoute from "./src/Routes/map.route.js";
 import RideRoute from "./src/Routes/ride.routes.js";
+import http from "http";
+import { initializeSocket } from "./socket.js";
 
 dotenv.config()
 const app = express();
@@ -26,6 +28,9 @@ app.use("/api/v1/captain" , CaptainRoute)
 app.use("/api/v1/map",mapRoute)
 app.use("/api/v1/ride" , RideRoute);
 
-app.listen(process.env.PORT ,()=>{
+const server = http.createServer(app);
+initializeSocket(server);
+
+server.listen(process.env.PORT ,()=>{
     console.log(`server started on ${process.env.PORT}`)
 })

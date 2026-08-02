@@ -1,4 +1,6 @@
+
 import React, { useContext } from "react";
+
 import {
   Clock3,
   IndianRupee,
@@ -6,158 +8,108 @@ import {
   CarFront,
 } from "lucide-react";
 
-const CaptainDetails = () => {
+export const CaptainDetails = ({ captains }) => {
+  if (!captains) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <p className="text-gray-500">Loading...</p>
+      </div>
+    );
+  }
 
   return (
-    <div>
+  <div className="rounded-[32px] bg-gradient-to-br from-slate-900 via-slate-800 to-cyan-900 p-6 text-white shadow-2xl">
 
-      {/* Driver Card */}
-      <div className="flex items-center justify-between">
+    {/* Top */}
+    <div className="flex items-center justify-between">
 
-        <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4">
 
+        <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-white/10 backdrop-blur">
           <img
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRdlMd7stpWUCmjpfRjUsQ72xSWikidbgaI1w&s"
+            src={`https://ui-avatars.com/api/?name=${captains.firstName}+${captains.lastName}&background=0f172a&color=fff&size=200`}
             alt=""
-            className="h-16 w-16 rounded-2xl object-cover shadow-md"
+            className="h-16 w-16 rounded-2xl"
           />
-
-          <div>
-
-            <h2 className="text-xl font-bold capitalize">
-              {/* {captain.fullname.firstname} {captain.fullname.lastname} */}
-            </h2>
-
-            <p className="text-sm text-gray-500">
-              RideFlow Captain
-            </p>
-
-          </div>
-
         </div>
 
-        <div className="rounded-2xl bg-cyan-50 px-5 py-3 text-center">
+        <div>
 
-          <h2 className="flex items-center justify-center text-2xl font-bold text-cyan-700">
-            ₹295
+          <h2 className="text-2xl font-bold capitalize">
+            {captains.firstName} {captains.lastName}
           </h2>
 
-          <p className="text-xs text-gray-500">
-            Today's Earnings
+          <p className="mt-1 text-sm text-slate-300">
+            RideFlow Captain
           </p>
+
+          <span
+            className={`mt-3 inline-flex rounded-full px-3 py-1 text-xs font-semibold ${
+              captains.status === "ONLINE"
+                ? "bg-green-500 text-white"
+                : "bg-red-500 text-white"
+            }`}
+          >
+            {captains.status}
+          </span>
 
         </div>
 
       </div>
 
-      {/* Stats */}
+      <div className="rounded-2xl bg-white/10 px-5 py-3 text-center backdrop-blur">
 
-      <div className="mt-8 grid grid-cols-2 gap-4">
+        <p className="text-xs uppercase tracking-widest text-slate-300">
+          Rating
+        </p>
 
-        {/* Online */}
-
-        <div className="rounded-2xl border bg-gray-50 p-5">
-
-          <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-cyan-100">
-            <Clock3 className="text-cyan-700" />
-          </div>
-
-          <h2 className="text-2xl font-bold">
-            10.2
-          </h2>
-
-          <p className="text-sm text-gray-500">
-            Hours Online
-          </p>
-
-        </div>
-
-        {/* Trips */}
-
-        <div className="rounded-2xl border bg-gray-50 p-5">
-
-          <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-green-100">
-            <CarFront className="text-green-700" />
-          </div>
-
-          <h2 className="text-2xl font-bold">
-            18
-          </h2>
-
-          <p className="text-sm text-gray-500">
-            Trips Today
-          </p>
-
-        </div>
-
-        {/* Rating */}
-
-        <div className="rounded-2xl border bg-gray-50 p-5">
-
-          <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-yellow-100">
-            <Star className="fill-yellow-500 text-yellow-500" />
-          </div>
-
-          <h2 className="text-2xl font-bold">
-            4.9
-          </h2>
-
-          <p className="text-sm text-gray-500">
-            Rating
-          </p>
-
-        </div>
-
-        {/* Earnings */}
-
-        <div className="rounded-2xl border bg-gray-50 p-5">
-
-          <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-violet-100">
-            <IndianRupee className="text-violet-700" />
-          </div>
-
-          <h2 className="text-2xl font-bold">
-            ₹5.6K
-          </h2>
-
-          <p className="text-sm text-gray-500">
-            This Week
-          </p>
-
-        </div>
-
-      </div>
-
-      {/* Vehicle */}
-
-      <div className="mt-6 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 p-5 text-white">
-
-        <div className="flex items-center justify-between">
-
-          <div>
-
-            <p className="text-sm text-cyan-100">
-              Your Vehicle
-            </p>
-
-            <h2 className="mt-1 text-xl font-bold">
-              {/* {captain.vehicle?.vehicleType || "Car"} */}
-            </h2>
-
-            <p className="text-sm text-cyan-100">
-              {/* {captain.vehicle?.plate || "DL 01 AB 1234"} */}
-            </p>
-
-          </div>
-
-          <CarFront size={42} />
-
-        </div>
+        <h2 className="mt-1 flex items-center justify-center gap-1 text-3xl font-bold">
+          ⭐ {captains.rating}
+        </h2>
 
       </div>
 
     </div>
-  );
-};
 
-export default CaptainDetails;
+    {/* Divider */}
+
+    <div className="my-6 h-px bg-white/10" />
+
+    {/* Vehicle */}
+
+    <div className="flex items-center justify-between">
+
+      <div>
+
+        <p className="text-sm text-slate-300">
+          Vehicle
+        </p>
+
+        <h2 className="mt-1 text-2xl font-bold capitalize">
+          {captains.vehicleColour} {captains.vehicleType}
+        </h2>
+
+        <p className="mt-2 text-slate-300">
+          {captains.vehiclePlate}
+        </p>
+
+      </div>
+
+      <div className="flex flex-col items-center">
+
+        <div className="rounded-2xl bg-white/10 p-4 backdrop-blur">
+          <CarFront size={38} />
+        </div>
+
+        <span className="mt-3 rounded-full bg-cyan-400/20 px-4 py-1 text-sm font-medium text-cyan-200">
+          {captains.vehicleCapacity} Seats
+        </span>
+
+      </div>
+
+    </div>
+
+  </div>
+);
+
+};

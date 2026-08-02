@@ -3,16 +3,59 @@ import { Link } from "react-router-dom";
 import { LogOut } from "lucide-react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import CaptainDetails from "../Components/captaindetail";
 import RidePopUp from "../Components/ridepopup";
 import ConfirmRidePopUp from "../Components/confirmridepopup";
+import axios from "axios";
+import { CaptainDetails } from "../Components/captaindetail";
+import { SocketContext } from "../Context/socket.context";
 
 const CaptainHome = () => {
   const [ridepopuppanel , setridepopuppanel] = useState(false);
   const [confirmridepopup , setconfirmridepopup] = useState(false);
+  const [captains , setcaptains] = useState(null);
+  const [ride , setRide] = useState(null);
 
   const ridepopuppanelRef = useRef(null);
-  const confirmridepopupRef = useRef(null)
+  const confirmridepopupRef = useRef(null);
+
+  const {socket} = useContext(SocketContext);
+
+  const captain = async() => {
+    try {
+      
+      const token = localStorage.getItem('accessToken');
+  
+      const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/v1/captain/getprofile` , 
+         {headers : {Authorization: `Bearer ${token}`}
+    })
+    setcaptains(response.data.captain)
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  useEffect(()=> {
+    if(!captains) return;
+    console.log("Joining with", captains);
+    socket.emit("join" , {
+      userId : captains.id,
+      userType : "captain"
+    })
+  } , [captains]);
+
+  useEffect(()=>{
+    socket.on("new-ride",(rideData) => {
+      console.log(rideData);
+      setRide(rideData);
+      setridepopuppanel(true);
+    })
+    return () => {
+      socket.off("new-ride");
+    }
+  } ,[]);
+
+  useEffect(()=>{captain()},[]);
+
 
   useGSAP(()=>{
     gsap.to(confirmridepopupRef.current , {
@@ -67,10 +110,9 @@ const CaptainHome = () => {
       </div>
 
       {/* Bottom Details */}
-      <div 
-      className="absolute bottom-0 left-0 z-20 w-full h-[70%] rounded-t-[35px] bg-white p-6 shadow-2xl">
-
-        <CaptainDetails/>
+      <div
+className="absolute bottom-0 left-0 z-20 h-[50%] w-full rounded-t-[32px] bg-[#0F172A] text-white shadow-[0_-25px_80px_rgba(0,0,0,0.45)]">       
+ <CaptainDetails captains = {captains} />
 
       </div>
 
@@ -79,7 +121,7 @@ const CaptainHome = () => {
       ref={ridepopuppanelRef}
         className="fixed bottom-0 left-0 z-40 w-full translate-y-full rounded-t-[35px] bg-white"
       >
-        <RidePopUp setridepopuppanel = {setridepopuppanel} setconfirmridepopup = {setconfirmridepopup} />
+        <RidePopUp ride = {ride} setridepopuppanel = {setridepopuppanel} setconfirmridepopup = {setconfirmridepopup} />
       </div>
 
       {/* Confirm Popup */}
